@@ -1,6 +1,7 @@
 import datetime
 import logging
 import os
+from pkgutil import iter_modules
 from typing import Literal, Optional
 
 import discord
@@ -12,9 +13,13 @@ class MyBot(commands.Bot):
     async def on_ready(self):
         print(f'Logged on as {self.user}!')
 
+        # Load extensions
+        for extension in iter_modules(['extensions']):
+            await self.load_extension(f'extensions.{extension.name}')
+
 
 dotenv.load_dotenv()
-handler = logging.FileHandler(filename='../Celeste-Bot/discord.log', encoding='utf-8', mode='w')
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 intents = discord.Intents.all() # Overkill for now
 bot = MyBot(command_prefix=".", intents=intents)
 
