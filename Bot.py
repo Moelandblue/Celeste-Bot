@@ -7,11 +7,20 @@ from typing import Literal, Optional
 import discord
 from discord.ext import commands
 import dotenv
+import aiosqlite
 
 
 class MyBot(commands.Bot):
+    def __init__(self, command_prefix, *, intents: discord.Intents) -> None:
+        super().__init__(command_prefix=command_prefix, intents=intents)
+        self.db = None
+
     async def on_ready(self):
         print(f'Logged on as {self.user}!')
+
+        # Load database
+        bot.db = await aiosqlite.connect('bot.db')
+        print('Successfully connected to database')
 
         # Load extensions
         for extension in iter_modules(['extensions']):
