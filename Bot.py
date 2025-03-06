@@ -23,8 +23,11 @@ class MyBot(commands.Bot):
         print('Successfully connected to database')
 
         # Load extensions
+        print('Loading extensions...')
         for extension in iter_modules(['extensions']):
             await self.load_extension(f'extensions.{extension.name}')
+            print(f'Extension {extension.name} loaded')
+        print('Extensions loading complete')
 
 
 dotenv.load_dotenv()
@@ -69,6 +72,13 @@ async def sync(ctx: commands.Context, guilds: commands.Greedy[discord.Object], s
             ret += 1
 
     await ctx.send(f"Synced the tree to {ret}/{len(guilds)}.")
+
+@bot.command(name="quit")
+@commands.guild_only()
+@commands.is_owner()
+async def quit_bot(ctx: commands.Context):
+    """Quit command"""
+    await bot.close()
 
 
 @bot.tree.command()
